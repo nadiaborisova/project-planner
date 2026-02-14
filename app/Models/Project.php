@@ -19,4 +19,11 @@ class Project extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function activities()
+    {
+        return $this->hasManyThrough(Activity::class, Task::class, 'project_id', 'subject_id')
+            ->where('subject_type', Task::class)
+            ->latest();
+    }
 }
