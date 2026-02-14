@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectResource;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ActivityResource;
+
 
 class ProjectController extends Controller
 {
@@ -36,6 +38,15 @@ class ProjectController extends Controller
         $project = Project::create($validated);
 
         return new ProjectResource($project);
+    }
+
+    public function activities(Project $project)
+    {
+        $activities = $project->activities()
+            ->with(['user', 'subject'])
+            ->paginate(10);
+
+        return ActivityResource::collection($activities);
     }
 
     /**

@@ -13,6 +13,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('projects', ProjectController::class);
     Route::apiResource('tasks', TaskController::class);
     
-    // Ендпоинт за смяна на статус (Drag & Drop)
     Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus']);
+    Route::get('projects/{project}/activities', [ProjectController::class, 'activities']);
 });
