@@ -8,10 +8,13 @@ use App\Models\Project;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\ActivityResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 
 class ProjectController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
@@ -54,6 +57,8 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        $this->authorize('view', $project);
+
         return new ProjectResource($project->load('tasks'));
     }
 
@@ -68,8 +73,11 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Project $project)
     {
-        //
+        $this->authorize('delete', $project);
+
+        $project->delete();
+        return response()->noContent();
     }
 }

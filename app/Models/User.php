@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     public function teams()
     {
-        return $this->belongsToMany(Team::class);
+        return $this->belongsToMany(Team::class)->withPivot('role');
     }
 
     public function assignedTasks()
