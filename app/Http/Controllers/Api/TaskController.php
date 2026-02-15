@@ -77,4 +77,21 @@ class TaskController extends Controller
         $task->delete();
         return response()->noContent();
     }
+
+    public function addComment(Request $request, Task $task)
+    {
+        $validated = $request->validate([
+            'content' => 'required|string|min:2'
+        ]);
+
+        $comment = $task->comments()->create([
+            'user_id' => Auth::id(),
+            'content' => $validated['content']
+        ]);
+
+        return response()->json([
+            'message' => 'Comment added successfully',
+            'comment' => $comment->load('user:id,name')
+        ]);
+    }
 }

@@ -34,6 +34,7 @@ class ActivityResource extends JsonResource
             'task_created' => 'created a new task',
             'task_moved' => 'moved the task',
             'task_completed' => 'completed the task',
+            'task_commented' => 'left a comment on',
             default => 'performed an action',
         };
     }
