@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\TaskController;
+use App\Http\Controllers\Api\DashboardController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -15,4 +16,5 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus']);
     Route::get('projects/{project}/activities', [ProjectController::class, 'activities']);
+    Route::get('projects/{project}/stats', [DashboardController::class, 'index']);
 });
