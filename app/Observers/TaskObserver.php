@@ -45,7 +45,7 @@ class TaskObserver
      */
     public function deleted(Task $task): void
     {
-        //
+        $this->recordActivity($task, 'task_archived');
     }
 
     /**
@@ -53,7 +53,7 @@ class TaskObserver
      */
     public function restored(Task $task): void
     {
-        //
+        $this->recordActivity($task, 'task_restored');
     }
 
     /**
