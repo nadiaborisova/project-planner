@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Team;
 use App\Models\Task;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model
 {
-    use SoftDeletes;
-    
+    use SoftDeletes, HasFactory;
+
     protected $fillable = ['team_id','name','description','status'];
 
     public function team()
