@@ -15,15 +15,16 @@ class TaskResource extends JsonResource
      */
 
     public function toArray($request)
-{
-    return [
-        'id' => $this->id,
-        'title' => $this->title,
-        'status' => $this->status,
-        'priority' => $this->priority,
-        'due_date' => $this->due_date ? $this->due_date->format('Y-m-d') : null,
-        'assignee' => new UserResource($this->whenLoaded('assignee')),
-        'created_at' => $this->created_at->diffForHumans(),
-    ];
-}
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'status' => $this->status,
+            'priority' => $this->priority,
+            'due_date' => $this->due_date ? $this->due_date->format('Y-m-d') : null,
+            'assignee' => new UserResource($this->whenLoaded('assignee')),
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'human_date' => $this->created_at->diffForHumans(),
+        ];
+    }
 }

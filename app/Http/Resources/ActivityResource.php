@@ -24,7 +24,8 @@ class ActivityResource extends JsonResource
             'type' => $this->type,
             'description' => $this->formatDescription(),
             'subject_title' => $this->subject?->title ?? 'Deleted Task',
-            'created_at' => $this->created_at->diffForHumans(),
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'human_date' => $this->created_at->diffForHumans(),
         ];
     }
 
