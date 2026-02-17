@@ -40,24 +40,26 @@ class TaskController extends Controller
             'due_date'    => 'nullable|date',
         ]);
 
-        $project = Project::find($validated['project_id']);
-        $this->authorize('update', $project);
+        $project = Project::findOrFail($validated['project_id']);
+        $this->authorize('create', Task::class);
+        if (!$request->user()->teams->contains($project->team_id)) {
+            abort(403);
+        }
 
         $task = Task::create($validated);
-
         return new TaskResource($task);
     }
 
     public function show(Task $task)
     {
         $this->authorize('view', $task->project);
-        
+
         return new TaskResource($task->load('assignee'));
     }
 
     public function updateStatus(Request $request, Task $task)
     {
-        $this->authorize('update', $task->project);
+        $this->authorize('update', $task);
 
         $validated = $request->validate([
             'status' => 'required|in:todo,doing,review,done'
@@ -73,7 +75,7 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
-        $this->authorize('delete', $task->project);
+        $this->authorize('delete', $task);
 
         $task->delete();
         return response()->noContent();

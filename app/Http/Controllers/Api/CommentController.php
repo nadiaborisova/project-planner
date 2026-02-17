@@ -16,7 +16,7 @@ class CommentController extends Controller
 
     public function index(Task $task)
     {
-        $this->authorize('view', $task->project);
+        $this->authorize('view', $task);
 
         $comments = $task->comments()->with('user')->latest()->get();
     
@@ -25,7 +25,7 @@ class CommentController extends Controller
 
     public function store(Request $request, Task $task)
     {
-        $this->authorize('update', $task->project);
+        $this->authorize('update', $task);
 
         $validated = $request->validate([
             'content' => 'required|string|min:2'

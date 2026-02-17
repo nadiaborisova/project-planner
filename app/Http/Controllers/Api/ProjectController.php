@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Validation\Rule;
 use App\Models\Project;
-use App\Models\Team;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\ActivityResource;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 
 class ProjectController extends Controller
@@ -35,13 +35,14 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'team_id' => 'required|exists:teams,id',
+            'team_id' => [
+                'required',
+                Rule::exists('team_user', 'team_id')->where('user_id', Auth::id()),
+            ],
             'description' => 'nullable|string',
         ]);
-
-        $team = Team::find($validated['team_id']);
         
-        $this->authorize('createProject', $team); 
+        $this->authorize('create', Project::class); 
 
         $project = Project::create($validated);
 
