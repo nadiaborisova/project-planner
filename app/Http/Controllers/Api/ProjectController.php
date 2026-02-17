@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Models\Team;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\ActivityResource;
@@ -38,6 +39,10 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
         ]);
 
+        $team = Team::find($validated['team_id']);
+        
+        $this->authorize('createProject', $team); 
+
         $project = Project::create($validated);
 
         return new ProjectResource($project);
@@ -45,6 +50,8 @@ class ProjectController extends Controller
 
     public function activities(Project $project)
     {
+        $this->authorize('view', $project);
+
         $activities = $project->activities()
             ->with(['user', 'subject'])
             ->paginate(10);

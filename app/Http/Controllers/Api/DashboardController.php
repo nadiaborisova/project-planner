@@ -4,32 +4,39 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
-use App\Models\Task;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 
 class DashboardController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(Project $project)
     {
-        Gate::authorize('view', $project);
+        $this->authorize('view', $project);
 
-        $totalTasks = $project->tasks()->count();
-        $doneTasks = $project->tasks()->where('status', 'done')->count();
-        
-        $completionPercentage = $totalTasks > 0 ? round(($doneTasks / $totalTasks) * 100, 2) : 0;
+        $stats = $project->tasks()
+            ->selectRaw('count(*) as total')
+            ->selectRaw("count(case when status = 'done' then 1 end) as done")
+            ->selectRaw("count(case when priority = 'high' then 1 end) as high_priority")
+            ->selectRaw("count(case when status != 'done' and due_date < ? then 1 end) as overdue", [now()])
+            ->first();
+
+        $totalTasks = $stats->total;
+        $doneTasks = $stats->done;
+
+        $completionPercentage = $totalTasks > 0 
+            ? round(($doneTasks / $totalTasks) * 100, 2) 
+            : 0;
 
         return response()->json([
             'project_name' => $project->name,
             'stats' => [
-                'total_tasks' => $totalTasks,
-                'done_tasks' => $doneTasks,
+                'total_tasks' => (int) $totalTasks,
+                'done_tasks' => (int) $doneTasks,
                 'completion_rate' => $completionPercentage . '%',
-                'high_priority_count' => $project->tasks()->where('priority', 'high')->count(),
-                'overdue_tasks' => $project->tasks()
-                    ->where('status', '!=', 'done')
-                    ->where('due_date', '<', now())
-                    ->count(),
+                'high_priority_count' => (int) $stats->high_priority,
+                'overdue_tasks' => (int) $stats->overdue,
             ]
         ]);
     }
