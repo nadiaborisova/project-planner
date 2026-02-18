@@ -6,10 +6,16 @@ use App\Http\Controllers\Api\{
     ProjectController,
     TaskController,
     DashboardController,
-    CommentController
+    CommentController,
+    AuthController,
 };
 
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    
     // Users
     Route::get('me', [UserController::class, 'me']);
     Route::apiResource('users', UserController::class)->only(['index', 'show', 'update']);
