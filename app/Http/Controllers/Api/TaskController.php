@@ -7,13 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\Project;
 use App\Http\Resources\TaskResource;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 
 class TaskController extends Controller
 {
-    use AuthorizesRequests;
-
     public function index(Request $request)
     {
         $request->validate(['project_id' => 'required|exists:projects,id']);

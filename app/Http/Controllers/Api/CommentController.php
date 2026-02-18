@@ -7,13 +7,11 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CommentResource;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 
 class CommentController extends Controller
 {
-    use AuthorizesRequests;
-
+    
     public function index(Task $task)
     {
         $this->authorize('view', $task);

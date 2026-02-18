@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 
 class DashboardController extends Controller
 {
-    use AuthorizesRequests;
 
     public function index(Project $project)
     {
