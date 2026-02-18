@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\{
     DashboardController,
     CommentController,
     AuthController,
+    TeamController
 };
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -15,10 +16,14 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    
+
     // Users
     Route::get('me', [UserController::class, 'me']);
     Route::apiResource('users', UserController::class)->only(['index', 'show', 'update']);
+
+    // Teams
+    Route::apiResource('teams', TeamController::class)->only(['index', 'store', 'show']);
+    Route::post('teams/{team}/members', [TeamController::class, 'addMember']);
     
     // Projects
     Route::apiResource('projects', ProjectController::class);
