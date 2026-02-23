@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Project;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProjectResource;
-use App\Http\Resources\ActivityResource;
+use App\Http\Resources\V1\ProjectResource;
+use App\Http\Resources\V1\ActivityResource;
 
 
 class ProjectController extends Controller

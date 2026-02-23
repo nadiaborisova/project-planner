@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\TaskResource;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\Project;
-use App\Http\Resources\TaskResource;
 
 
 class TaskController extends Controller
