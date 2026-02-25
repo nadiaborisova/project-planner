@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
 return new class extends Migration
 {
     /**
@@ -14,8 +13,9 @@ return new class extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('type'); // task_moved, task_completed...
-            $table->morphs('subject'); // subject_id, subject_type
+            $table->foreignId('project_id')->index()->constrained()->cascadeOnDelete();
+            $table->string('type');
+            $table->morphs('subject');
             $table->timestamps();
         });
     }

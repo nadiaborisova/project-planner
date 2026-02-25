@@ -15,6 +15,7 @@ class CommentObserver
     {
         Activity::create([
             'user_id'      => $comment->user_id,
+            'project_id'   => $comment->task->project_id,
             'type'         => 'task_commented',
             'subject_id'   => $comment->task_id,
             'subject_type' => Task::class,
@@ -22,34 +23,15 @@ class CommentObserver
     }
 
     /**
-     * Handle the Comment "updated" event.
-     */
-    public function updated(Comment $comment): void
-    {
-        //
-    }
-
-    /**
      * Handle the Comment "deleted" event.
      */
     public function deleted(Comment $comment): void
     {
-        //
-    }
-
-    /**
-     * Handle the Comment "restored" event.
-     */
-    public function restored(Comment $comment): void
-    {
-        //
-    }
-
-    /**
-     * Handle the Comment "force deleted" event.
-     */
-    public function forceDeleted(Comment $comment): void
-    {
-        //
+        Activity::where('type', 'task_commented')
+            ->where('subject_id', $comment->task_id)
+            ->where('user_id', $comment->user_id)
+            ->latest()
+            ->first()
+            ?->delete();
     }
 }

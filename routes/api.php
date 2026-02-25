@@ -41,6 +41,6 @@ Route::prefix('v1')->group(function () {
         Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus']);
         
         // Task comments
-        Route::apiResource('tasks.comments', CommentController::class)->only(['index', 'store']);
+        Route::apiResource('tasks.comments', CommentController::class)->only(['index', 'store', 'update', 'destroy']);
     });
 });
