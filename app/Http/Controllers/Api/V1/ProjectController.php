@@ -18,9 +18,11 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::whereIn('team_id', Auth::user()->teams->pluck('id'))
+        $projects = Project::whereHas('team.users', function ($query) {
+                $query->where('users.id', Auth::id());
+            })
             ->withCount('tasks')
-            ->get();
+            ->paginate();
 
         return ProjectResource::collection($projects);
     }
@@ -44,17 +46,6 @@ class ProjectController extends Controller
         $project = Project::create($validated);
 
         return new ProjectResource($project);
-    }
-
-    public function activities(Project $project)
-    {
-        $this->authorize('view', $project);
-
-        $activities = $project->activities()
-            ->with(['user', 'subject'])
-            ->paginate(10);
-
-        return ActivityResource::collection($activities);
     }
 
     /**

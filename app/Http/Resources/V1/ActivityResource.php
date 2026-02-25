@@ -18,12 +18,14 @@ class ActivityResource extends JsonResource
             'id' => $this->id,
             'user' => [
                 'id' => $this->user_id,
-                'name' => $this->user->name,
+                'name' => $this->whenLoaded('user', fn() => $this->user->name),
             ],
             'type' => $this->type,
             'description' => $this->formatDescription(),
-            'subject_title' => $this->subject?->title ?? 'Deleted Task',
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'subject_title' => $this->whenLoaded('subject', function() {
+                return $this->subject?->title ?? 'Deleted Task';
+            }),
+            'created_at' => $this->created_at->toDateTimeString(),
             'human_date' => $this->created_at->diffForHumans(),
         ];
     }

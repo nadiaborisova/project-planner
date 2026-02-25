@@ -20,7 +20,7 @@ class ProjectResource extends JsonResource
             'status' => $this->status,
             'tasks' => TaskResource::collection($this->whenLoaded('tasks')),
             'stats' => [
-                'total_tasks' => $this->tasks_count,
+                'total_tasks' => $this->whenCounted('tasks'),
             ],
         ];
     }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\{
     DashboardController,
     CommentController,
     AuthController,
+    ActivityController,
     TeamController
 };
 
@@ -16,7 +17,7 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-
+    
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -30,8 +31,10 @@ Route::prefix('v1')->group(function () {
         
         // Projects
         Route::apiResource('projects', ProjectController::class);
-        Route::get('projects/{project}/activities', [ProjectController::class, 'activities']);
-        Route::get('projects/{project}/stats', [DashboardController::class, 'index']);
+        Route::prefix('projects/{project}')->group(function () {
+            Route::get('activities', [ActivityController::class, 'index']);
+            Route::get('stats', [DashboardController::class, 'index']);
+        });
         
         // Tasks
         Route::apiResource('tasks', TaskController::class);
