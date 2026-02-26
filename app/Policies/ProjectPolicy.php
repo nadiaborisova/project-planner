@@ -23,11 +23,19 @@ class ProjectPolicy
         return $user->teams()->exists();
     }
 
+    public function update(User $user, Project $project): bool
+    {
+        return $user->teams()
+            ->where('team_id', $project->team_id)
+            ->where('role', 'admin')
+            ->exists();
+    }
+
     public function delete(User $user, Project $project): bool
     {
         return $user->teams()
-            ->where('teams.id', $project->team_id)
-            ->wherePivot('role', 'admin')
+            ->where('team_id', $project->team_id)
+            ->where('role', 'admin')
             ->exists();
     }
 }

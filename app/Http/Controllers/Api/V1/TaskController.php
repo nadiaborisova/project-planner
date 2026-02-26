@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\Project;
 
-
 class TaskController extends Controller
 {
     public function index(Request $request)
@@ -38,10 +37,8 @@ class TaskController extends Controller
         ]);
 
         $project = Project::findOrFail($validated['project_id']);
-        $this->authorize('create', Task::class);
-        if (!$request->user()->teams->contains($project->team_id)) {
-            abort(403);
-        }
+        
+        $this->authorize('create', [Task::class, $project]);
 
         $task = Task::create($validated);
         return new TaskResource($task);
@@ -64,10 +61,8 @@ class TaskController extends Controller
 
         $task->update(['status' => $validated['status']]);
 
-        return response()->json([
-            'message' => 'Task status updated',
-            'task' => new TaskResource($task)
-        ]);
+        return (new TaskResource($task))
+            ->additional(['message' => 'Task status updated']);
     }
 
     public function destroy(Task $task)

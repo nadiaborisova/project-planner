@@ -15,9 +15,19 @@ class TeamPolicy
 
     public function addMember(User $user, Team $team): bool
     {
+        return $this->isTeamAdmin($user, $team);
+    }
+
+    public function removeMember(User $user, Team $team, User $memberToRemove): bool
+    {
+        return $this->isTeamAdmin($user, $team) || $user->id === $memberToRemove->id;
+    }
+
+    private function isTeamAdmin(User $user, Team $team): bool
+    {
         return $team->users()
             ->where('user_id', $user->id)
-            ->wherePivot('role', 'admin')
+            ->where('role', 'admin')
             ->exists();
     }
 }

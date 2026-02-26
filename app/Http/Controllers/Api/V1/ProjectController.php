@@ -6,19 +6,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Project;
+use App\Models\Team;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\ProjectResource;
-use App\Http\Resources\V1\ActivityResource;
-
 
 class ProjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $projects = Project::whereHas('team.users', function ($query) {
+        $projects = Project::whereHas('team.users', function ($query): void {
                 $query->where('users.id', Auth::id());
             })
             ->withCount('tasks')
@@ -27,9 +23,6 @@ class ProjectController extends Controller
         return ProjectResource::collection($projects);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -41,16 +34,15 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
         ]);
         
-        $this->authorize('create', Project::class); 
+        $team = Team::findOrFail($validated['team_id']);
+        
+        $this->authorize('createProject', $team); 
 
         $project = Project::create($validated);
 
         return new ProjectResource($project);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Project $project)
     {
         $this->authorize('view', $project);
@@ -58,17 +50,20 @@ class ProjectController extends Controller
         return new ProjectResource($project->load('tasks'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Project $project)
     {
-        //
+        $this->authorize('update', $project);
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $project->update($validated);
+
+        return new ProjectResource($project);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Project $project)
     {
         $this->authorize('delete', $project);

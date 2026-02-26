@@ -9,7 +9,8 @@ use App\Http\Controllers\Api\V1\{
     CommentController,
     AuthController,
     ActivityController,
-    TeamController
+    TeamController,
+    TeamMemberController
 };
 
 // V1
@@ -27,7 +28,8 @@ Route::prefix('v1')->group(function () {
 
         // Teams
         Route::apiResource('teams', TeamController::class)->only(['index', 'store', 'show']);
-        Route::post('teams/{team}/members', [TeamController::class, 'addMember']);
+        Route::post('teams/{team}/members', [TeamMemberController::class, 'store']);
+        Route::delete('teams/{team}/members/{user}', [TeamMemberController::class, 'destroy']);
         
         // Projects
         Route::apiResource('projects', ProjectController::class);
